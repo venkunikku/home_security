@@ -162,7 +162,7 @@ def recognize_faces():
                 y = starty - 10 if starty - 10 > 10 else starty + 10
 
                 cv2.rectangle(frame, (startx - 10, y), (startx + 50, y + 10),
-                              (30, 90, 120), -1)
+                              (0, 255, 0), -1)
 
                 cv2.rectangle(frame, (startx, starty), (endx, endy),
                               (0, 255, 0), 2)
@@ -181,11 +181,10 @@ def recognize_faces():
 
 
 def recognize_faces_using_ncs():
-    #detector = cv2.dnn.readNetFromCaffe("../caffe_models/deploy.prototxt",
+    # detector = cv2.dnn.readNetFromCaffe("../caffe_models/deploy.prototxt",
     #                                    "../caffe_models/res10_300x300_ssd_iter_140000.caffemodel")
 
-
-    #detector = cv2.dnn.readNet("../caffe_models/ncs2_with_mean/res10_300x300_ssd_iter_140000.xml",
+    # detector = cv2.dnn.readNet("../caffe_models/ncs2_with_mean/res10_300x300_ssd_iter_140000.xml",
     #                           "../caffe_models/ncs2_with_mean/res10_300x300_ssd_iter_140000.bin")
 
     detector = cv2.dnn.readNet("../caffe_models/ncs2/res10_300x300_ssd_iter_140000.xml",
@@ -243,20 +242,21 @@ def recognize_faces_using_ncs():
                 text = "{}: {:.2f}%".format(name, proba * 100)
                 y = starty - 10 if starty - 10 > 10 else starty + 10
 
-                cv2.rectangle(frame, (startx - 10, y), (startx + 50, y + 10),
-                              (30, 90, 120), -1)
+                cv2.rectangle(frame, (startx, y - 20), (startx + 135, y + 5),
+                              (50, 205, 50), -1)
 
                 cv2.rectangle(frame, (startx, starty), (endx, endy),
-                              (0, 255, 0), 2)
+                              (50, 205, 50), 2)
                 cv2.putText(frame, text, (startx, y),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 2)
+                            cv2.FONT_HERSHEY_TRIPLEX, 0.45, (255, 255, 255), 1)
 
                 cv2.imshow("Frame", frame)
-                key = cv2.waitKey(1) & 0xFF
+        key = cv2.waitKey(1) & 0xFF
 
-                # if the `q` key was pressed, break from the loop
-                if key == ord("q"):
-                    break
+        # if the `q` key was pressed, break from the loop
+        if key == ord("q"):
+            # cv2.dnn.writeTextGraph(detector, "../Data/misc")
+            break
 
     vs.stop()
     cv2.destroyAllWindows()
@@ -343,7 +343,7 @@ if __name__ == '__main__':
     # detect_face_from_input_images_and_save_to_pickle()
     #
     # train_face_using_ml(path_to_embeddings="../Data/pickle_saving/embeddings.pickle")
-
+    #
     # recognize_faces()
 
     recognize_faces_using_ncs()
