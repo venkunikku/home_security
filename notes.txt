@@ -34,8 +34,8 @@ Python3 face_detection_and_embedings.py --cam True
 
 
 Data Capturing:
-face_dataset_creator.py  --train_data ../Data/image_data_set/rush -fn=100
-
+Python3 face_dataset_creator.py  --out ../Data/image_data_set/rush -fn=100
+Python3 face_dataset_creator.py  --out ../Data/image_data_set/venku -fn=120
 
 Test Data Capturing TEST:
 face_dataset_creator.py  --train_data ../Data/image_data_set_test/rush_test -fn=1
