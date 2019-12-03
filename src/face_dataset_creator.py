@@ -59,9 +59,11 @@ def face_date_set_using_pre_trained_model():
     ap.add_argument("-o", "--out", required=True, help="Path to output pictures")
     ap.add_argument("-pc", "--picamera", required=False,
                     help="Use PiCamera class for video instead of Opencv VideoStream")
+    ap.add_argument("-fn", "--fileno", required=True,
+                    help="File number sequence ")
     args = vars(ap.parse_args())
     photos_folder_path = args["out"]
-
+    file_sequence_number_start = args['fileno']
     print(cv2.__version__)
 
     detector = cv2.dnn.readNetFromCaffe("../caffe_models/deploy.prototxt",
@@ -71,7 +73,7 @@ def face_date_set_using_pre_trained_model():
 
     cap = cv2.VideoCapture(0)
 
-    total = 0
+    total = int(file_sequence_number_start)
     while cap.isOpened():
         res, image = cap.read()
         original_frame = image.copy()
@@ -123,7 +125,7 @@ def face_date_set_using_pre_trained_model():
                     break
                 elif key == ord("k"):
                     # capture picture
-                    p = os.path.sep.join([photos_folder_path, f"{str(total).zfill(5)}.png"])
+                    p = os.path.sep.join([photos_folder_path, f"{str(total).zfill(5)}.jpg"])
                     print(f"Path - {p}")
                     cv2.imwrite(p, original_frame)
                     total += 1

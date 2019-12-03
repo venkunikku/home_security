@@ -16,11 +16,9 @@ def detect_face_from_input_images_and_save_to_pickle():
 
     embedder = cv2.dnn.readNetFromTorch("../caffe_models/openface_nn4.small2.v1.t7")
 
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-o", "--out", required=True, help="Path to output pictures")
+    args = processe_args()
 
-    args = vars(ap.parse_args())
-    photos_folder_path = args["out"]
+    photos_folder_path = args["train_data"]
 
     our_embeddings = []
     our_names = []
@@ -108,6 +106,9 @@ def get_files(path_to_folder=None):
 
 
 def recognize_faces():
+    args = processe_args()
+    use_camera = args["cam"]
+
     detector = cv2.dnn.readNetFromCaffe("../caffe_models/deploy.prototxt",
                                         "../caffe_models/res10_300x300_ssd_iter_140000.caffemodel")
 
@@ -121,63 +122,87 @@ def recognize_faces():
     with open("../Data/pickle_saving/le.pickle", "rb") as lab_encod:
         le = pickle.loads(lab_encod.read())
 
-    vs = VideoStream(src=0).start()
+    if use_camera == "True" or use_camera is None:
+        vs = VideoStream(src=0).start()
+    else:
+        print(args)
+        video_file_path = args["video_file_path"]
+        vs = cv2.VideoCapture(video_file_path) #VideoStream(video_file_path).start()
+
     time.sleep(2.0)
 
     while True:
-        frame = vs.read()
-        frame = imutils.resize(frame, width=600)
-        (h, w) = frame.shape[:2]
 
-        image_blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0),
-                                           swapRB=False,
-                                           crop=False)
+        if use_camera == "True":
+            frame = vs.read()
+        else:
+            time.sleep(.01)
+            ret, frame = vs.read()
+        frame = identify_person(detector, embedder, frame, le, recognizer)
 
-        detector.setInput(image_blob)
-        detections = detector.forward()
+        key = cv2.waitKey(1) & 0xFF
 
-        for i in range(0, detections.shape[2]):
-            confidence = detections[0, 0, i, 2]
-
-            if confidence > 0.5:
-                box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-                (startx, starty, endx, endy) = box.astype("int")
-
-                face = frame[starty:endy, startx:endx]
-                (fh, fw) = face.shape[:2]
-
-                if fw < 20 or fh < 20:
-                    continue
-
-                faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, (96, 96), (0, 0, 0), swapRB=True, crop=False)
-                embedder.setInput(faceBlob)
-                vec = embedder.forward()
-
-                preds = recognizer.predict_proba(vec)[0]
-                j = np.argmax(preds)
-                proba = preds[j]
-                name = le.classes_[j]
-
-                text = "{}: {:.2f}%".format(name, proba * 100)
-                y = starty - 10 if starty - 10 > 10 else starty + 10
-
-                cv2.rectangle(frame, (startx - 10, y), (startx + 50, y + 10),
-                              (0, 255, 0), -1)
-
-                cv2.rectangle(frame, (startx, starty), (endx, endy),
-                              (0, 255, 0), 2)
-                cv2.putText(frame, text, (startx, y),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 2)
-
-                cv2.imshow("Frame", frame)
-                key = cv2.waitKey(1) & 0xFF
-
-                # if the `q` key was pressed, break from the loop
-                if key == ord("q"):
-                    break
-
+        # if the `q` key was pressed, break from the loop
+        if key == ord("q"):
+            break
+        cv2.imshow("Frame", frame)
     vs.stop()
     cv2.destroyAllWindows()
+
+
+def identify_person(detector, embedder, frame, le, recognizer):
+    frame = imutils.resize(frame, width=600)
+    (h, w) = frame.shape[:2]
+    image_blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0),
+                                       swapRB=False,
+                                       crop=False)
+    detector.setInput(image_blob)
+    detections = detector.forward()
+    # cv2.imshow("Frame", frame)
+    for i in range(0, detections.shape[2]):
+        confidence = detections[0, 0, i, 2]
+
+        if confidence > 0.5:
+            box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+            (startx, starty, endx, endy) = box.astype("int")
+
+            face = frame[starty:endy, startx:endx]
+            (fh, fw) = face.shape[:2]
+
+            if fw < 20 or fh < 20:
+                continue
+
+            face_blob = cv2.dnn.blobFromImage(face, 1.0 / 255, (96, 96), (0, 0, 0), swapRB=True, crop=False)
+            embedder.setInput(face_blob)
+            vec = embedder.forward()
+
+            preds = recognizer.predict_proba(vec)[0]
+            j = np.argmax(preds)
+            proba = preds[j]
+            name = le.classes_[j]
+
+            text = "{}: {:.2f}%".format(name, proba * 100)
+            y = starty - 10 if starty - 10 > 10 else starty + 10
+
+            cv2.rectangle(frame, (startx, y - 20), (startx + 135, y + 5),
+                          (50, 205, 50), -1)
+
+            cv2.rectangle(frame, (startx, starty), (endx, endy),
+                          (50, 205, 50), 2)
+            cv2.putText(frame, text, (startx, y),
+                        cv2.FONT_HERSHEY_TRIPLEX, 0.45, (255, 255, 255), 1)
+
+            if name == "unknown":
+                cv2.rectangle(frame, (startx, y - 20), (startx + 135, y + 5),
+                              (0, 0, 225), -1)
+
+                cv2.rectangle(frame, (startx, starty), (endx, endy),
+                              (0, 0, 255), 2)
+                cv2.putText(frame, text, (startx, y),
+                            cv2.FONT_HERSHEY_TRIPLEX, 0.45, (255, 255, 255), 1)
+
+            # cv2.imshow("Frame", frame)
+    return frame
 
 
 def recognize_faces_using_ncs():
@@ -307,7 +332,7 @@ def check_cv2():
             i = np.argmax(detections[0, 0, :, 2])
             confidence = detections[0, 0, i, 2]
 
-            if confidence > 0.5:
+            if confidence > 0.8:
                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
                 (startX, startY, endX, endY) = box.astype("int")
 
@@ -337,13 +362,38 @@ def check_cv2():
     cv2.destroyAllWindows()
 
 
+def processe_args():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-cam", "--cam", required=False, help="Should camera be used")
+    ap.add_argument("-vfp", "--video_file_path", required=False, help="Path of the video file to be processed")
+
+    # Path to the pictures for training
+    ap.add_argument("-td", "--train_data", required=False, help="Path to output pictures")
+
+    # if we have to create the facial embeddings
+    ap.add_argument("-embed", "--create_embeddings", required=False, help="create the facial embeddings")
+
+    # Train the ML model to our faces
+    ap.add_argument("-train_model", "--train_model", required=False, help="Train the model")
+
+    # start recognizing face
+    ap.add_argument("-face", "--face_recognize", required=False, help="Recognize faceß")
+
+
+    args = vars(ap.parse_args())
+
+    return args
+
+
 if __name__ == '__main__':
+    program_arguments = processe_args()
     # check_cv2()
+    if program_arguments["create_embeddings"] == "True":
+        print("Creating Embeddings")
+        detect_face_from_input_images_and_save_to_pickle()
+    if program_arguments["train_model"] == 'True':
+        train_face_using_ml(path_to_embeddings="../Data/pickle_saving/embeddings.pickle")
+    if program_arguments["face_recognize"] == "True":
+        recognize_faces()
 
-    # detect_face_from_input_images_and_save_to_pickle()
-    #
-    # train_face_using_ml(path_to_embeddings="../Data/pickle_saving/embeddings.pickle")
-    #
-    # recognize_faces()
-
-    recognize_faces_using_ncs()
+    # recognize_faces_using_ncs()

@@ -1,0 +1,53 @@
+/Users/venku/Documents/PyCharmProjects/opencv2_projects_pycharm/caffe_models
+
+mo_caffe.py --input_model /Users/venku/Documents/PyCharmProjects/opencv2_projects_pycharm/caffe_models/res10_300x300_ssd_iter_140000.caffemodel --input_proto /Users/venku/Documents/PyCharmProjects/opencv2_projects_pycharm/caffe_models/deploy.prototxt  --mean_values [104,177,123] --log_level=DEBUG --output_dir /Users/venku/Documents/PyCharmProjects/opencv2_projects_pycharm/caffe_models/ncs2_with_mean
+
+
+To Run all the code
+Python3 face_detection_and_embedings.py --out ../Data/image_data_set/
+
+
+To run face detection
+python3 face_dataset_creator.py  --out ../Data/image_data_set/venku -fn=50
+
+
+
+Python3 mo_caffe.py —-data_type FP16 --input_model /Users/venku/Documents/PyCharmProjects/home_security_project/caffe_models/res10_300x300_ssd_iter_140000.caffemodel --input_proto /Users/venku/Documents/PyCharmProjects/home_security_project/caffe_models/deploy.prototxt  --output_dir /Users/venku/Documents/PyCharmProjects/home_security_project/caffe_models/ncs2_fp16
+
+
+
+— —————————
+
+
+
+face-demographics-walking.mp4
+
+
+To run embedding, train model and start facial recognition
+python3 face_detection_and_embedings.py --cam True  --create_embeddings True --train_model True --face_recognize True --train_data ../Data/image_data_set/
+
+python3 face_detection_and_embedings.py --cam True --face_recognize True
+
+
+To run the program with cam:
+Python3 face_detection_and_embedings.py --cam True
+
+
+Data Capturing:
+face_dataset_creator.py  --train_data ../Data/image_data_set/rush -fn=100
+
+
+Test Data Capturing TEST:
+face_dataset_creator.py  --train_data ../Data/image_data_set_test/rush_test -fn=1
+
+
+Test Data Capturing TRAIN:
+face_dataset_creator.py  --out ../Data/image_data_set/venku -fn=90
+
+- with Opencv Video:
+Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4 --face_recognize True
+
+
+
+Not Used: But with Haarcascade:
+face_dataset_creator.py --haarcas ../caffe_models/haarcascade_frontalface_default.xml --out ../Data/image_data_set/venku -fn=60
