@@ -69,8 +69,6 @@ def face_date_set_using_pre_trained_model():
     detector = cv2.dnn.readNetFromCaffe("../caffe_models/deploy.prototxt",
                                         "../caffe_models/res10_300x300_ssd_iter_140000.caffemodel")
 
-
-
     cap = cv2.VideoCapture(0)
 
     total = int(file_sequence_number_start)
@@ -130,9 +128,6 @@ def face_date_set_using_pre_trained_model():
                     cv2.imwrite(p, original_frame)
                     total += 1
 
-
-
-
         cv2.imshow("Face box", image)
         # cv2.waitKey(0)
         k = cv2.waitKey(1) & 0xFF
@@ -141,6 +136,7 @@ def face_date_set_using_pre_trained_model():
 
     cap.release()
     cv2.destroyAllWindows()
+
 
 if __name__ == "__main__":
     face_date_set_using_pre_trained_model()

@@ -26,6 +26,12 @@ face-demographics-walking.mp4
 To run embedding, train model and start facial recognition
 python3 face_detection_and_embedings.py --cam True  --create_embeddings True --train_model True --face_recognize True --train_data ../Data/image_data_set/
 
+python3 face_detection_and_embedings.py --cam True  --create_embeddings False --train_model True --face_recognize True --train_data ../Data/image_data_set/
+python3 face_detection_and_embedings.py --cam True  --create_embeddings False --train_model True --face_recognize True --train_data ../Data/image_data_set/ --ml_model SGD_mod_huber
+
+python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True
+
+
 python3 face_detection_and_embedings.py --cam True --face_recognize True
 
 

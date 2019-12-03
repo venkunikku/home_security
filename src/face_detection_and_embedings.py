@@ -6,8 +6,13 @@ import os
 import pickle
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
+from sklearn.linear_model import SGDClassifier
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix
 from imutils.video import VideoStream
 import time
+from datetime import datetime
 
 
 def detect_face_from_input_images_and_save_to_pickle():
@@ -76,8 +81,104 @@ def detect_face_from_input_images_and_save_to_pickle():
     fi.close()
 
 
-def train_face_using_ml(path_to_embeddings=None, path_to_save_recognizer="../Data/pickle_saving/recognizer.pickle",
+def test_a_model(model, create_embeddings=False):
+    print(f"Model we will use to evaluate the test results {model}")
+    args = processe_args()
+
+    detector = cv2.dnn.readNetFromCaffe("../caffe_models/deploy.prototxt",
+                                        "../caffe_models/res10_300x300_ssd_iter_140000.caffemodel")
+
+    embedder = cv2.dnn.readNetFromTorch("../caffe_models/openface_nn4.small2.v1.t7")
+
+    photos_folder_path = args["test_data_path"]
+
+    if create_embeddings:
+
+        our_embeddings = []
+        our_names = []
+        total = 0
+
+        for file_path in get_files(photos_folder_path):
+            name = file_path.split(os.path.sep)[-2]
+            print(file_path, name)
+
+            image = cv2.imread(file_path)
+            image = imutils.resize(image, width=600)
+            (h, w) = image.shape[:2]
+            image_blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0),
+                                               swapRB=False, crop=False)
+            detector.setInput(image_blob)
+            detections = detector.forward()
+
+            if len(detections) > 0:
+                print("Detections are >0", detections.shape,
+                      detections[0, 0, 0, 3:7].shape)  # index 3 value is varying (1, 1, 144, 7)
+
+                i = np.argmax(detections[0, 0, :, 2])
+                print(f"i argmax value: {i}")
+
+                confidenc = detections[0, 0, i, 2]
+
+                if confidenc > 0.5:
+                    box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+                    (startx, starty, endx, endy) = box.astype('int')
+
+                    face = image[starty:endy, startx:endx]
+                    (fh, fw) = face.shape[:2]
+
+                    if fw < 30 or fh < 20:
+                        continue
+
+                    face_blob = cv2.dnn.blobFromImage(face, 1.0 / 255, (96, 96), (0, 0, 0), swapRB=True, crop=False)
+                    embedder.setInput(face_blob)
+                    vec = embedder.forward()
+
+                    print(f"Vector Shape: {vec.shape}")
+
+                    our_names.append(name)
+                    our_embeddings.append(vec.flatten())
+                    total += 1
+        print(f"Total: {total}")
+        data = {"embeddings": our_embeddings, "names": our_names}
+        print(data)
+        # with open("../Data/pickle_saving/embeddings.pickle", "wb") as f:
+        #     print("Saving the embeddings as pickle")
+        #     f.write(pickle.dumps(data))
+        #     f.close()
+        fi = open("../Data/pickle_saving_test/embeddings_test.pickle", "wb")
+        fi.write(pickle.dumps(data))
+        fi.close()
+
+        # saving labels
+        le = LabelEncoder()
+        le.fit_transform(data["names"])
+        with open("../Data/pickle_saving_test/le_test.pickle", "wb") as lab:
+            lab.write(pickle.dumps(le))
+
+    recognizer = None
+    test_le = None
+    test_embeddings = None
+    with open(f"../Data/pickle_saving/recognizer_{model}.pickle", "rb") as rec:
+        recognizer = pickle.loads(rec.read())
+
+    with open("../Data/pickle_saving_test/le_test.pickle", "rb") as lab_encod:
+        test_le = pickle.loads(lab_encod.read())
+
+    with open("../Data/pickle_saving_test/embeddings_test.pickle", "rb") as test_emb:
+        test_embeddings = pickle.loads(test_emb.read())
+
+    print(test_embeddings["names"])
+    predictions = recognizer.predict(test_embeddings["embeddings"])
+
+    encoding = LabelEncoder()
+    labels = encoding.fit_transform(test_embeddings["names"])
+    print(confusion_matrix(labels, predictions))
+    print(classification_report(labels, predictions))
+
+
+def train_face_using_ml(path_to_embeddings=None, path_to_save_recognizer="../Data/pickle_saving/recognizer_{}.pickle",
                         path_to_save_labels="../Data/pickle_saving/le.pickle"):
+    args = processe_args()
     data = None
     with open(path_to_embeddings, 'rb') as f:
         data = pickle.loads(f.read())
@@ -85,11 +186,28 @@ def train_face_using_ml(path_to_embeddings=None, path_to_save_recognizer="../Dat
     le = LabelEncoder()
     labels = le.fit_transform(data["names"])
     print(labels)
+    model = args["ml_model"]
+    if model == "SGD":
+        recognizer = SGDClassifier(max_iter=1000, tol=1e-3, loss='log')
+        recognizer.fit(data["embeddings"], labels)
+    elif model == "SGD_mod_huber":
+        recognizer = SGDClassifier(max_iter=1000, tol=1e-3, loss='modified_huber')
+        recognizer.fit(data["embeddings"], labels)
+    elif model == 'LDA':
+        recognizer = LinearDiscriminantAnalysis()
+        recognizer.fit(data["embeddings"], labels)
+    elif model == "GBC":
+        recognizer = GradientBoostingClassifier(n_estimators=1000)
+        recognizer.fit(data["embeddings"], labels)
+    elif model == 'RF':
+        recognizer = RandomForestClassifier(n_estimators=1000)
+        recognizer.fit(data["embeddings"], labels)
+    else:
+        model = 'SVC'
+        recognizer = SVC(kernel="linear", gamma='scale', probability=True)
+        recognizer.fit(data["embeddings"], labels)
 
-    recognizer = SVC(kernel="linear", probability=True)
-    recognizer.fit(data["embeddings"], labels)
-
-    with open(path_to_save_recognizer, "wb") as fi:
+    with open(path_to_save_recognizer.format(model), "wb") as fi:
         fi.write(pickle.dumps(recognizer))
 
     with open(path_to_save_labels, "wb") as lab:
@@ -127,27 +245,52 @@ def recognize_faces():
     else:
         print(args)
         video_file_path = args["video_file_path"]
-        vs = cv2.VideoCapture(video_file_path) #VideoStream(video_file_path).start()
+        vs = cv2.VideoCapture(video_file_path)  # VideoStream(video_file_path).start()
+
+    record = args["record"]
+    out = None
+    if record == "True":
+        print("Recording")
+        w = int(vs.get(cv2.CAP_PROP_FRAME_WIDTH))
+        h = int(vs.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        print(f"width and height: {w},{h}")
+        fourcc = cv2.VideoWriter_fourcc(*"XVID")
+        out = cv2.VideoWriter(f"../1Data/video/face_classified/video_{datetime.now}.mp4", fourcc, 20.0,
+                              (w, h))  # 20 frams
 
     time.sleep(2.0)
 
-    while True:
+    try:
+        while vs.isOpened():
 
+            if use_camera == "True":
+                frame = vs.read()
+            else:
+                time.sleep(.01)
+                ret, frame = vs.read()
+            frame = identify_person(detector, embedder, frame, le, recognizer)
+
+            key = cv2.waitKey(1) & 0xFF
+
+            # if the `q` key was pressed, break from the loop
+            if key == ord("q"):
+                break
+
+            if record == "True":
+                print("Writing to the frame")
+                out.write(frame)
+            cv2.imshow("Frame", frame)
+    except Exception as e:
+        print("Exception:", e)
+    finally:
+
+        cv2.destroyAllWindows()
+        vs.release()
         if use_camera == "True":
-            frame = vs.read()
-        else:
-            time.sleep(.01)
-            ret, frame = vs.read()
-        frame = identify_person(detector, embedder, frame, le, recognizer)
-
-        key = cv2.waitKey(1) & 0xFF
-
-        # if the `q` key was pressed, break from the loop
-        if key == ord("q"):
-            break
-        cv2.imshow("Frame", frame)
-    vs.stop()
-    cv2.destroyAllWindows()
+            vs.stop()
+    if record == "True":
+        print("Releasing out video stream")
+        out.release()
 
 
 def identify_person(detector, embedder, frame, le, recognizer):
@@ -379,6 +522,13 @@ def processe_args():
     # start recognizing face
     ap.add_argument("-face", "--face_recognize", required=False, help="Recognize faceß")
 
+    ap.add_argument("-ml", "--ml_model", required=False, help="Recognize face")
+
+    ap.add_argument("-r", "--record", required=False, help="Record the face")
+
+    # Testing models
+    ap.add_argument("-test_data", "--test_data_path", required=False, help="Testing data Path")
+    ap.add_argument("-test", "--test", required=False, help="Testing the model")
 
     args = vars(ap.parse_args())
 
@@ -388,11 +538,17 @@ def processe_args():
 if __name__ == '__main__':
     program_arguments = processe_args()
     # check_cv2()
+
     if program_arguments["create_embeddings"] == "True":
         print("Creating Embeddings")
         detect_face_from_input_images_and_save_to_pickle()
     if program_arguments["train_model"] == 'True':
         train_face_using_ml(path_to_embeddings="../Data/pickle_saving/embeddings.pickle")
+
+    if program_arguments["test"] == "True":
+        model = program_arguments["ml_model"]
+        test_a_model(model, create_embeddings=True)
+
     if program_arguments["face_recognize"] == "True":
         recognize_faces()
 
