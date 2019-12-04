@@ -11,9 +11,11 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.metrics import roc_curve
+from sklearn.model_selection import KFold, cross_val_score
 from imutils.video import VideoStream
 import time
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 
 def detect_face_from_input_images_and_save_to_pickle():
@@ -82,7 +84,7 @@ def detect_face_from_input_images_and_save_to_pickle():
     fi.close()
 
 
-def test_a_model(model, create_embeddings=False):
+def test_a_model(model, create_embeddings=False, compare_models=False):
     print(f"Model we will use to evaluate the test results {model}")
     args = processe_args()
 
@@ -177,6 +179,9 @@ def test_a_model(model, create_embeddings=False):
     print(classification_report(labels, predictions))
     # print(roc_curve(labels, predictions))
 
+    with open("../Data/pickle_saving/embeddings.pickle", "rb") as train_embeddings:
+        train_embed = pickle.loads(train_embeddings.read())
+
     for file_path in get_files(photos_folder_path):
         name = file_path.split(os.path.sep)[-2]
         image_name = file_path.split(os.path.sep)[-1]
@@ -189,7 +194,30 @@ def test_a_model(model, create_embeddings=False):
         file_path = f"../Data/test_images_annotated/{model}/{name}_{image_name}"
         cv2.imwrite(file_path, frame)
 
-
+    if compare_models:
+        models = []
+        models.append(('LDA', LinearDiscriminantAnalysis(n_components=3)))
+        models.append(('SVC', SVC(kernel="linear", gamma='scale', probability=True)))
+        models.append(('RF', RandomForestClassifier(n_estimators=1000)))
+        models.append(('SGD', SGDClassifier(max_iter=1000, tol=1e-3, loss='log')))
+        models.append(('GBC', GradientBoostingClassifier(n_estimators=1000)))
+        results = []
+        names = []
+        scoring = 'accuracy'
+        for name, model in models:
+            kfold = KFold(n_splits=5, random_state=24)
+            cv_results = cross_val_score(model, train_embed["embeddings"], train_embed["names"],
+                                         cv=kfold, scoring=scoring)
+            results.append(cv_results)
+            names.append(name)
+            msg = "%s: %f (%f)" % (name, cv_results.mean(), cv_results.std())
+            print(msg)
+        fig = plt.figure()
+        fig.suptitle('Comparison of the Models')
+        ax = fig.add_subplot(111)
+        plt.boxplot(results)
+        ax.set_xticklabels(names)
+        plt.show()
 def train_face_using_ml(path_to_embeddings=None, path_to_save_recognizer="../Data/pickle_saving/recognizer_{}.pickle",
                         path_to_save_labels="../Data/pickle_saving/le.pickle"):
     args = processe_args()
@@ -218,7 +246,7 @@ def train_face_using_ml(path_to_embeddings=None, path_to_save_recognizer="../Dat
         recognizer.fit(data["embeddings"], labels)
     else:
         model = 'SVC'
-        recognizer = SVC(kernel="linear", gamma='scale', probability=True)
+        recognizer = SVC(kernel="linear", gamma='scale', probability=True, decision_function_shape='ovo')
         recognizer.fit(data["embeddings"], labels)
 
     with open(path_to_save_recognizer.format(model), "wb") as fi:
@@ -566,7 +594,7 @@ if __name__ == '__main__':
 
     if program_arguments["test"] == "True":
         model = program_arguments["ml_model"]
-        test_a_model(model, create_embeddings=True)
+        test_a_model(model, create_embeddings=True, compare_models=True)
 
     if program_arguments["face_recognize"] == "True":
         model = program_arguments["ml_model"]

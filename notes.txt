@@ -281,3 +281,11 @@ Log
   627  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
   628  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
   629  history
+
+
+
+
+1. We will use these trained models on Raspberry PI using Intel Neural Compute Stick for making inference of the faces.
+2. Enhance the model to recognize faces in low light conditions.
+3, Create an interface for people to upload their family pictures so that the model recognize them as known vs unknown people.
+4. Add object detection or movement in the frames for detecting any other things apart from faces. 
