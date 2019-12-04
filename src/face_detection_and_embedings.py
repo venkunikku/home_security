@@ -208,7 +208,7 @@ def train_face_using_ml(path_to_embeddings=None, path_to_save_recognizer="../Dat
         recognizer = SGDClassifier(max_iter=1000, tol=1e-3, loss='modified_huber')
         recognizer.fit(data["embeddings"], labels)
     elif model == 'LDA':
-        recognizer = LinearDiscriminantAnalysis()
+        recognizer = LinearDiscriminantAnalysis(n_components=3)
         recognizer.fit(data["embeddings"], labels)
     elif model == "GBC":
         recognizer = GradientBoostingClassifier(n_estimators=1000)
@@ -363,7 +363,7 @@ def identify_person(detector, embedder, frame, le, recognizer):
                             cv2.FONT_HERSHEY_TRIPLEX, 0.45, (255, 255, 255), 1)
 
             # cv2.imshow("Frame", frame)
-    print(frame.shape)
+    #print(frame.shape)
     return frame
 
 
