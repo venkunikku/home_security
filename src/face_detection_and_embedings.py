@@ -10,6 +10,7 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import roc_curve
 from imutils.video import VideoStream
 import time
 from datetime import datetime
@@ -174,6 +175,19 @@ def test_a_model(model, create_embeddings=False):
     labels = encoding.fit_transform(test_embeddings["names"])
     print(confusion_matrix(labels, predictions))
     print(classification_report(labels, predictions))
+    # print(roc_curve(labels, predictions))
+
+    for file_path in get_files(photos_folder_path):
+        name = file_path.split(os.path.sep)[-2]
+        image_name = file_path.split(os.path.sep)[-1]
+        #print(file_path, name)
+
+        image = cv2.imread(file_path)
+        frame = identify_person(detector, embedder, image, encoding, recognizer)
+        cv2.putText(frame, f"Model: {model}", (10, 20),
+                    cv2.FONT_HERSHEY_TRIPLEX, 0.45, (0, 0, 0), 1)
+        file_path = f"../Data/test_images_annotated/{model}/{name}_{image_name}"
+        cv2.imwrite(file_path, frame)
 
 
 def train_face_using_ml(path_to_embeddings=None, path_to_save_recognizer="../Data/pickle_saving/recognizer_{}.pickle",
@@ -223,7 +237,7 @@ def get_files(path_to_folder=None):
             yield p
 
 
-def recognize_faces():
+def recognize_faces(model):
     args = processe_args()
     use_camera = args["cam"]
 
@@ -234,7 +248,7 @@ def recognize_faces():
 
     recognizer = None
     le = None
-    with open("../Data/pickle_saving/recognizer.pickle", "rb") as rec:
+    with open(f"../Data/pickle_saving/recognizer_{model}.pickle", "rb") as rec:
         recognizer = pickle.loads(rec.read())
 
     with open("../Data/pickle_saving/le.pickle", "rb") as lab_encod:
@@ -254,14 +268,14 @@ def recognize_faces():
         w = int(vs.get(cv2.CAP_PROP_FRAME_WIDTH))
         h = int(vs.get(cv2.CAP_PROP_FRAME_HEIGHT))
         print(f"width and height: {w},{h}")
-        fourcc = cv2.VideoWriter_fourcc(*"XVID")
-        out = cv2.VideoWriter(f"../1Data/video/face_classified/video_{datetime.now}.mp4", fourcc, 20.0,
-                              (w, h))  # 20 frams
+        fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # *"XVID"
+        out = cv2.VideoWriter(f"../Data/video/face_classified/video_{datetime.now}.mp4", fourcc, 20.0,
+                              (600, 330))  # 20 frams
 
     time.sleep(2.0)
 
     try:
-        while vs.isOpened():
+        while True:
 
             if use_camera == "True":
                 frame = vs.read()
@@ -269,6 +283,8 @@ def recognize_faces():
                 time.sleep(.01)
                 ret, frame = vs.read()
             frame = identify_person(detector, embedder, frame, le, recognizer)
+            cv2.putText(frame, f"Model: {model}", (10, 20),
+                        cv2.FONT_HERSHEY_TRIPLEX, 0.45, (0, 0, 0), 1)
 
             key = cv2.waitKey(1) & 0xFF
 
@@ -280,14 +296,16 @@ def recognize_faces():
                 print("Writing to the frame")
                 out.write(frame)
             cv2.imshow("Frame", frame)
+        cv2.destroyAllWindows()
+        if use_camera == "True":
+            vs.stop()
     except Exception as e:
         print("Exception:", e)
     finally:
 
         cv2.destroyAllWindows()
-        vs.release()
-        if use_camera == "True":
-            vs.stop()
+        if use_camera == "False":
+            vs.release()
     if record == "True":
         print("Releasing out video stream")
         out.release()
@@ -345,6 +363,7 @@ def identify_person(detector, embedder, frame, le, recognizer):
                             cv2.FONT_HERSHEY_TRIPLEX, 0.45, (255, 255, 255), 1)
 
             # cv2.imshow("Frame", frame)
+    print(frame.shape)
     return frame
 
 
@@ -550,6 +569,9 @@ if __name__ == '__main__':
         test_a_model(model, create_embeddings=True)
 
     if program_arguments["face_recognize"] == "True":
-        recognize_faces()
+        model = program_arguments["ml_model"]
+        recognize_faces(model)
 
     # recognize_faces_using_ncs()
+
+    print(datetime.now)

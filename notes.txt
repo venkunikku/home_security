@@ -35,6 +35,12 @@ python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_
 python3 face_detection_and_embedings.py --cam True --face_recognize True
 
 
+--- Correct Commands
+ python3 face_detection_and_embedings.py --cam True  --create_embeddings False --train_model True --face_recognize True --train_data ../Data/image_data_set/ --ml_model LDA
+
+python3 face_detection_and_embedings.py --cam True  --create_embeddings False --train_model True --face_recognize True --train_data ../Data/image_data_set/ --ml_model lda
+
+
 To run the program with cam:
 Python3 face_detection_and_embedings.py --cam True
 
@@ -57,3 +63,221 @@ Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/vi
 
 Not Used: But with Haarcascade:
 face_dataset_creator.py --haarcas ../caffe_models/haarcascade_frontalface_default.xml --out ../Data/image_data_set/venku -fn=60
+
+
+
+Log
+
+  417  sudo nano demo_security_barrier_camera.sh 
+  418  sudo ./demo_squeezenet_download_convert_run.sh
+  419  workon
+  420  workon cv
+  421  python
+  422  conda env list
+  423  conda activae data_mining
+  424  conda activate data_mining
+  425  jupyter lab
+  426  pwd
+  427  cd /Users/venku/Documents/UChicago/Projects/movidius_related/yolo3/tensorflow-yolo-v3/
+  428  ls 
+  429  ls -l
+  430  python convert_weights_pb.py --class_names coco.names --data_format NHWC --weights_file yolov3.weights
+  431  conda env list
+  432  conda activate ml_tensor_flow
+  433  python convert_weights_pb.py --class_names coco.names --data_format NHWC --weights_file yolov3.weights
+  434  ls -l
+  435  pwd
+  436  pwd
+  437  cd ..
+  438  cd ..
+  439  ls
+  440  cd facenet/
+  441  ls
+  442  cd 20180408-102900/
+  443  ls
+  444  pwd
+  445  ls
+  446  pwd
+  447  cd Documents/UChicago/
+  448  ls
+  449  cd Projects/
+  450  ls
+  451  cd ..
+  452  cd Course/
+  453  ls
+  454  cd Project/
+  455  ls
+  456  cd capstone/
+  457  cd crew-2/
+  458  ls
+  459  clear
+  460  git status
+  461  git pull
+  462  git status
+  463  git add app/utils/find_objects.py 
+  464  git commit -m "formating the code"
+  465  git push
+  466  git stash
+  467  git status
+  468  git checkout -b detch_drive_task1_r11102019
+  469  git status
+  470  git branch
+  471  git checkout master
+  472  git branch -d detch_drive_task1_r11102019
+  473  git branch
+  474  git stash
+  475  git add app/utils/control_gopigo.py 
+  476  git add data/notebooks/
+  477  git stash
+  478  git status
+  479  git log
+  480  git checkout -b detect_drive_task1_r11102019
+  481  git status
+  482  git push
+  483  git push --set-upstream origin detect_drive_task1_r11102019
+  484  git branch
+  485  git pull
+  486  git checkout master
+  487  git pull
+  488  git stash list
+  489  git branch
+  490  git checkout detect_drive_task1_r1102019
+  491  git checkout detect_drive_task1_r11102019
+  492  git branch
+  493  git stash list
+  494  git stash pop
+  495  git stash drop
+  496  git stash list
+  497  conda env list
+  498  conda activate data_mining
+  499  jupyter lab
+  500  jupyter lab
+  501  pwd
+  502  history
+  503  Python3 face_detection_and_embedings.py --cam False --video-file-path ../Data/video/face-demographics-walking.mp4
+  504  pwd
+  505  ls
+  506  ls
+  507  cd ..
+  508  ls 
+  509  cd home_security_project/
+  510  ls
+  511  cd src/
+  512  Python3 face_detection_and_embedings.py --cam False --video-file-path ../Data/video/face-demographics-walking.mp4
+  513  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  514  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  515  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  516  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  517  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  518  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  519  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  520  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  521  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  522  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  523  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  524  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  525  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  526  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  527  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  528  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4
+  529  Python3 face_detection_and_embedings.py --cam True
+  530  Python3 face_detection_and_embedings.py --cam True
+  531  ptyhon3 face_detection_and_embedings.py --cam True  —-train_data True --create_embeddings True --train_model True --face_recognize True
+  532  ptyhon3 face_detection_and_embedings.py --cam True  --train_data True --create_embeddings True --train_model True --face_recognize True
+  533  python3 face_detection_and_embedings.py --cam True  --train_data True --create_embeddings True --train_model True --face_recognize True
+  534  python3 face_detection_and_embedings.py --cam True  --train_data True --create_embeddings True --train_model True --face_recognize True
+  535  python3 face_detection_and_embedings.py --cam True  —-train_data True --create_embeddings True --train_model True --face_recognize True --train_data ../Data/image_data_set/
+  536  python3 face_detection_and_embedings.py --cam True  --create_embeddings True --train_model True --face_recognize True --train_data ../Data/image_data_set/
+  537  python3 face_detection_and_embedings.py --cam True  --create_embeddings True --train_model True --face_recognize True --train_data ../Data/image_data_set/
+  538  python3 face_detection_and_embedings.py --cam True  --create_embeddings True --train_model True --face_recognize True --train_data ../Data/image_data_set/
+  539  python3 face_detection_and_embedings.py --cam True  --create_embeddings True --train_model True --face_recognize True --train_data ../Data/image_data_set/
+  540  python3 face_detection_and_embedings.py --cam True  --create_embeddings True --train_model True --face_recognize True --train_data ../Data/image_data_set/
+  541  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4 --face_recognize True
+  542  python3 face_detection_and_embedings.py --cam True 
+  543  python3 face_detection_and_embedings.py --cam True --face_recognize True 
+  544  python3 face_detection_and_embedings.py --cam True  --create_embeddings True --train_model True --face_recognize True --train_data ../Data/image_data_set/
+  545  python3 face_detection_and_embedings.py --cam True  --create_embeddings True --train_model True --face_recognize True --train_data ../Data/image_data_set/
+  546  python3 face_detection_and_embedings.py --cam True  --create_embeddings True --train_model True --face_recognize True --train_data ../Data/image_data_set/
+  547  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4 --face_recognize True
+  548  python3 face_detection_and_embedings.py --cam True --face_recognize True 
+  549  face_dataset_creator.py  --train_data ../Data/image_data_set/venku -fn=120
+  550  python3 face_dataset_creator.py  --train_data ../Data/image_data_set/venku -fn=120
+  551  face_dataset_creator.py  --out ../Data/image_data_set/venku -fn=120
+  552  python3 face_dataset_creator.py  --out ../Data/image_data_set/venku -fn=120
+  553  python3 face_detection_and_embedings.py --cam True  --create_embeddings True --train_model True --face_recognize True --train_data ../Data/image_data_set/
+  554  python3 face_detection_and_embedings.py --cam True  --create_embeddings True --train_model True --face_recognize True --train_data ../Data/image_data_set/
+  555  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4 --face_recognize True
+  556  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4 --face_recognize True
+  557  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4 --face_recognize True
+  558  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4 --face_recognize True
+  559  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4 --face_recognize True
+  560  python3 face_detection_and_embedings.py --cam True  --create_embeddings False --train_model True --face_recognize True --train_data ../Data/image_data_set/
+  561  python3 face_detection_and_embedings.py --cam True  --create_embeddings False --train_model True --face_recognize True --train_data ../Data/image_data_set/
+  562  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4 --face_recognize True
+  563  Python3 face_detection_and_embedings.py --cam True --face_recognize True
+  564  python3 face_detection_and_embedings.py --cam True  --create_embeddings False --train_model True --face_recognize True --train_data ../Data/image_data_set/ --
+  565  python3 face_detection_and_embedings.py --cam True  --create_embeddings False --train_model True --face_recognize True --train_data ../Data/image_data_set/ --ml_model SGD_mod_huber
+  566  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/face-demographics-walking.mp4 --face_recognize True
+  567  python3 face_detection_and_embedings.py --cam True  --create_embeddings False --train_model True --face_recognize True --train_data ../Data/image_data_set/ --ml_model lda
+  568  python3 face_detection_and_embedings.py --cam True  --create_embeddings False --train_model True --face_recognize True --train_data ../Data/image_data_set/ --ml_model GBC
+  569  python3 face_detection_and_embedings.py --cam True  --create_embeddings False --train_model True --face_recognize True --train_data ../Data/image_data_set/ --ml_model RF
+  570  python3 face_detection_and_embedings.py --cam True  --create_embeddings False --train_model True --face_recognize True --train_data ../Data/image_data_set/ 
+  571  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test_results True
+  572  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test_results True
+  573  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True
+  574  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True
+  575  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True
+  576  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True
+  577  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True
+  578  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model SVC
+  579  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model SVC
+  580  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model SVC
+  581  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model SVC
+  582  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model SVC
+  583  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model SVC
+  584  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model SVC
+  585  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model SVC
+  586  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model SVC
+  587  clear
+  588  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model SVC
+  589  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model SVC
+  590  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model SVC
+  591  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model SVC
+  592  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office.mp4 --face_recognize True
+  593  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office.mp4 --face_recognize True
+  594  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_2.mp4 --face_recognize True
+  595  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model RF
+  596  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_2.mp4 --face_recognize True
+  597  python3 face_detection_and_embedings.py --cam True  --create_embeddings False --train_model True --face_recognize True --train_data ../Data/image_data_set/ --ml_model LDA
+  598  python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_test --test True --ml_model LDA
+  599  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_3.mp4 --face_recognize True
+  600  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_3.mp4 --face_recognize True
+  601  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_3.mp4 --face_recognize True
+  602  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_3.mp4 --face_recognize True --r True
+  603  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_3.mp4 --face_recognize True --r True
+  604  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_4.mp4 --face_recognize True --r True
+  605  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  606  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  607  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  608  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  609  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  610  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  611  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_4.mp4 --face_recognize True --r True
+  612  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_4.mp4 --face_recognize True --r True
+  613  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_4.mp4 --face_recognize True --r True
+  614  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_4.mp4 --face_recognize True --r True
+  615  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_6.mov --face_recognize True --r True
+  616  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_4.mp4 --face_recognize True --r True
+  617  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_4.mp4 --face_recognize True --r True
+  618  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  619  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  620  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  621  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  622  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  623  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  624  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  625  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  626  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  627  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  628  Python3 face_detection_and_embedings.py --cam False --video_file_path ../Data/video/rush_office_5.mp4 --face_recognize True --r True
+  629  history
