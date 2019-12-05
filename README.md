@@ -28,7 +28,7 @@ python3 face_detection_and_embedings.py --test_data_path ../Data/image_data_set_
 
 ```
 
-## If you want to just start your camera and do inference without running any models:
+## If you want to just start your camera and do inference without creating the embedding and train the embeddings:
 ```angular2html
 python3 face_detection_and_embedings.py --cam True --face_recognize True --ml_model SVC --record False  
 ```
