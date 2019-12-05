@@ -40,5 +40,6 @@ python3 face_detection_and_embedings.py --cam True --face_recognize True --ml_mo
 
 ## If you want to create your own images are test data:
 ```angular2html
+python3 face_dataset_creator.py --help  
 python3 face_dataset_creator.py  --train_data ../Data/image_data_set/venku -fn=120
 ```
